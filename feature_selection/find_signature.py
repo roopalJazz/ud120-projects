@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import pickle
 import numpy
 numpy.random.seed(42)
@@ -8,11 +6,8 @@ numpy.random.seed(42)
 ### The words (features) and authors (labels), already largely processed.
 ### These files should have been created from the previous (Lesson 10)
 ### mini-project.
-words_file = "../text_learning/your_word_data.pkl" 
-authors_file = "../text_learning/your_email_authors.pkl"
-word_data = pickle.load( open(words_file, "r"))
-authors = pickle.load( open(authors_file, "r") )
-
+word_data = pickle.load( open("word_data_overfit.pkl", "r"))		
+authors = pickle.load( open("email_authors_overfit.pkl", "r") )
 
 
 ### test_size is the percentage of events assigned to the test set (the
@@ -35,9 +30,32 @@ features_test  = vectorizer.transform(features_test).toarray()
 features_train = features_train[:150].toarray()
 labels_train   = labels_train[:150]
 
-
-
 ### your code goes here
-
+from sklearn.tree import DecisionTreeClassifier		
+from sklearn.metrics import accuracy_score		
+		
+clf = DecisionTreeClassifier(min_samples_split=40)		
+clf.fit(features_train, labels_train)		
+pred = clf.predict(features_test)		
+print "Accuracy:", accuracy_score(labels_test, pred)		
+		
+print "Important features:"		
+for index, feature in enumerate(clf.feature_importances_):		
+    if feature>0.2:		
+        print "feature no", index        		
+        print "importance", feature		
+ 		
+"""		
+ Result:		
+ 		
+ For word_data and email_authors:		
+ 	Accuracy: 1.0		
+ For word_data_overfit and email_authors_overfit:		
+ 	Accuracy: 0.959044369601		
+ 	Important Features:		
+ 		feature no: 33604		
+ 		Importance: 0.7674705882325		
+ 			
+ """
 
 
